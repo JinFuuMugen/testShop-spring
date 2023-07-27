@@ -57,13 +57,15 @@ public class ProductController {
     public ResponseEntity<Product> addProduct(@RequestBody Product product){
         logger.info("Received post product request");
         product.setId(null);
+        product.setUpdatedAt(LocalDateTime.now());
+        product.setCreatedAt(LocalDateTime.now());
         Product uploaded = productRepository.save(product);
         logger.info("Added new product");
         return new ResponseEntity<>(uploaded, HttpStatus.OK);
     }
 
     @PutMapping(path = "/products/{id}")
-    public ResponseEntity<Product>  updateProduct(@PathVariable Long id, @RequestBody Product product){
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product){
         logger.info("Received update product request");
 
         Product existingProduct = productRepository.findById(id).orElse(null);
@@ -77,7 +79,6 @@ public class ProductController {
             existingProduct.setPrice(product.getPrice());
             existingProduct.setStock(product.getStock());
             existingProduct.setActive(product.isActive());
-            existingProduct.setCreatedAt(product.getCreatedAt());
             existingProduct.setUpdatedAt(LocalDateTime.now());
 
             Product updated = productRepository.save(existingProduct);
